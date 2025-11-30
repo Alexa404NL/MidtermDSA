@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <climits>
 #include <numeric>
+#include <cmath>
 
 using namespace std;
 
@@ -15,6 +16,23 @@ struct TrieNode {
     string word;
 
     TrieNode() : isEndOfWord(false) {}
+};
+
+
+// position of word in tree (calculates distance)
+//TODO add kd node structure and tree
+struct Position {
+    string word;
+    vector<double> coords;
+
+    double distance(const Position& other) const {
+        double sum = 0.0;
+        for (size_t i = 0; i < coords.size(); ++i) {
+            double diff = coords[i] - other.coords[i];
+            sum += diff * diff;
+        }
+        return sqrt(sum);
+    }
 };
 
 class Trie {
@@ -51,6 +69,41 @@ private:
         }
 
         return false;
+    }
+
+    void searchRecursive(TrieNode* node, char letter, const string& target, 
+                         const vector<int>& prevRow, vector<string>& results, int maxDist) {
+        
+        int columns = target.size() + 1;
+        vector<int> currentRow(columns);
+        currentRow[0] = prevRow[0] + 1;
+
+        int minRowCost = currentRow[0];
+
+        for (int i = 1; i < columns; i++) {
+            int insertCost = currentRow[i - 1] + 1;
+            int deleteCost = prevRow[i] + 1;
+            int replaceCost = prevRow[i - 1];
+            
+            if (target[i - 1] != letter) {
+                replaceCost += 1;
+            }
+
+            currentRow[i] = min({ insertCost, deleteCost, replaceCost });
+            minRowCost = min(minRowCost, currentRow[i]);
+        }
+
+        if (minRowCost > maxDist) {
+            return;
+        }
+
+        if (node->isEndOfWord && currentRow.back() <= maxDist) {
+            results.push_back(node->word);
+        }
+
+        for (auto const& [key, childNode] : node->children) {
+            searchRecursive(childNode, key, target, currentRow, results, maxDist);
+        }
     }
 
 public:
@@ -96,7 +149,7 @@ public:
         iota(currentRow.begin(), currentRow.end(), 0);
 
         for (auto const& [key, childNode] : root->children) {
-            //TODO: recursive search through thre trie
+           searchRecursive(childNode, key, word, currentRow, results, maxDist);
         }
 
         return results;
