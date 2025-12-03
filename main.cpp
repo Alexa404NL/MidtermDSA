@@ -39,7 +39,8 @@ struct Position {
     }
 
     // convert word to position object
-    static Position fromWord(const string& word, size_t dimensions = 5) {
+    static Position fromWord(const string& word) {
+        size_t dimensions = 5;
         Position pos;
         pos.word = word;
         pos.coords.assign(dimensions, 0.0);
@@ -173,7 +174,7 @@ private:
     }
 
 public:
-    KDTree(size_t dims = 2) : root(nullptr), dimensions(dims) {}
+    KDTree() : root(nullptr), dimensions(5) {}
 
     ~KDTree() {
         clearRecursive(root);
@@ -181,7 +182,7 @@ public:
 
     // insert new word into kd-tree
     void insert(const string word) {
-        Position pos = Position::fromWord(word, dimensions);
+        Position pos = Position::fromWord(word);
 
         if (pos.coords.size() != dimensions) {
             cerr << "Position dimensions do not match KD-Tree dimensions" << endl;
@@ -192,7 +193,7 @@ public:
 
     // returns k nearest words to the target
     vector<Position> findKNearest(const string target_word, size_t k) {
-        Position target = Position::fromWord(target_word, dimensions);
+        Position target = Position::fromWord(target_word);
         vector<pair<double, Position>> candidates;
 
         if (!root) {
@@ -337,7 +338,7 @@ int main ()
 {
     // KD-Tree example so yall know how to call it
     // Use 5 dimensions to represent words more accurately
-    KDTree kdtree(5);
+    KDTree kdtree;
 
     // Insert words
     kdtree.insert("hello");
