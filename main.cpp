@@ -20,7 +20,6 @@ struct TrieNode {
 
 
 // position of word in tree (calculates distance)
-//TODO add kd node structure and tree
 struct Position {
     string word;
     vector<double> coords;
@@ -32,6 +31,106 @@ struct Position {
             sum += diff * diff;
         }
         return sqrt(sum);
+    }
+};
+
+// kd-tree node
+struct KDTreeNode {
+    Position pos;
+    KDTreeNode* left;
+    KDTreeNode* right;
+
+    KDTreeNode(const Position& p) : pos(p), left(nullptr), right(nullptr) {}
+};
+
+class KDTree {
+private:
+    KDTreeNode* root;
+    size_t dimensions;
+
+    KDTreeNode* insertRecursive(KDTreeNode* node, const Position& pos, size_t depth) {
+        // Base case: found insertion spot
+        if (!node) {
+            return new KDTreeNode(pos);
+        }
+
+        // Select axis based on depth so that all dimensions are cycled through
+        size_t axis = depth % dimensions;
+
+        // Compare position at current dimension and go left or right
+        if (pos.coords[axis] < node->pos.coords[axis]) {
+            node->left = insertRecursive(node->left, pos, depth + 1);
+        } else {
+            node->right = insertRecursive(node->right, pos, depth + 1);
+        }
+
+        return node;
+    }
+
+    // deletes nodes recursively (clear the kd-tree)
+    void clearRecursive(KDTreeNode* node) {
+        if (!node) return;
+        clearRecursive(node->left);
+        clearRecursive(node->right);
+        delete node;
+    }
+
+    // find the nearet word to the target word (position object)
+    void nearestNeighborRecursive(KDTreeNode* node, const Position& target, 
+                                   size_t depth, Position& best, double& bestDist) {
+        if (!node) return;
+
+        // calculate distance to current node
+        double dist = node->pos.distance(target);
+        if (dist < bestDist) {
+            bestDist = dist;
+            best = node->pos;
+        }
+
+        // choose axis based on depth
+        size_t axis = depth % dimensions;
+        double diff = target.coords[axis] - node->pos.coords[axis];
+
+        // pick a side to explore first
+        KDTreeNode* nearSide = (diff < 0) ? node->left : node->right;
+        KDTreeNode* farSide = (diff < 0) ? node->right : node->left;
+
+        // visit near side
+        nearestNeighborRecursive(nearSide, target, depth + 1, best, bestDist);
+
+        // check to visit far side
+        if (diff * diff < bestDist) {
+            nearestNeighborRecursive(farSide, target, depth + 1, best, bestDist);
+        }
+    }
+
+public:
+    KDTree(size_t dims = 2) : root(nullptr), dimensions(dims) {}
+
+    ~KDTree() {
+        clearRecursive(root);
+    }
+
+    // insert new word into kd-tree
+    void insert(const Position& pos) {
+        if (pos.coords.size() != dimensions) {
+            cerr << "Position dimensions do not match KD-Tree dimensions" << endl;
+            return;
+        }
+        root = insertRecursive(root, pos, 0);
+    }
+
+    // returns the nearest word to the target
+    Position findNearest(const Position& target) {
+        if (!root) {
+            cerr << "No words in KD-Tree." << endl;
+            return Position{"", {}};
+        }
+
+        Position best = root->pos;
+        double bestDist = numeric_limits<double>::max();
+        nearestNeighborRecursive(root, target, 0, best, bestDist);
+        return best;
     }
 };
 
