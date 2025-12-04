@@ -1,0 +1,39 @@
+# Build directories
+build/
+bin/
+
+# Object files
+*.o
+*.obj
+
+# Executable files
+spellchecker
+test_runner
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Generated benchmark data (keep sample results)
+benchmarks/results/data/*.csv
+benchmarks/results/data/*.md
+
+# Generated reports
+*.html
+benchmarks/results/plots/*.svg
+benchmarks/results/plots/*.png
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Large test files (regenerate with scripts)
+# data/large_test.txt
