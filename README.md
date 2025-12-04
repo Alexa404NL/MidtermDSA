@@ -495,16 +495,6 @@ MidtermDSA/
 
 ---
 
-## 👥 Team Members
-
-| Name | Role | Contributions |
-|------|------|---------------|
-| [Team Member 1] | Algorithm Design | Trie implementation, Levenshtein search |
-| [Team Member 2] | Data Structures | KD-Tree implementation, word embeddings |
-| [Team Member 3] | Integration | A* search, spellchecker core, benchmarks |
-
----
-
 ## 📚 References
 
 1. **Levenshtein, V.I.** (1966). "Binary codes capable of correcting deletions, insertions, and reversals." *Soviet Physics Doklady*, 10(8): 707-710.
@@ -524,30 +514,3 @@ MidtermDSA/
 ## 📄 License
 
 This project is developed for educational purposes as part of the DSA course midterm evaluation.
-
----
-
-## 🔄 Changelog
-
-### v1.1.0 (December 2025)
-
-- Added OpenMP parallel processing
-- Implemented tone and sentiment analysis
-- Added ASCII visualization system
-- Extended dictionary to 15,000 words
-- Performance improvements (3.53x speedup)
-- HTML report export functionality
-
-### v1.0.0 (December 2025)
-
-- Initial implementation
-- Trie with Levenshtein distance search
-- KD-Tree with semantic word embeddings
-- A* search algorithm integration
-- Interactive UI
-- Benchmark suite
-- Unit tests (18 tests)
-
----
-
-**Last Updated**: December 2025
