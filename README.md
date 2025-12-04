@@ -8,7 +8,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 1. [Problem Definition](#problem-definition)
 2. [Research Question](#research-question)
@@ -25,7 +25,7 @@
 
 ---
 
-## 🎯 Problem Definition
+## Problem Definition
 
 ### Context and Motivation
 
@@ -51,7 +51,7 @@ Given a text document and a dictionary of valid words, develop an efficient spel
 
 ---
 
-## 🔬 Research Question
+## Research Question
 
 > **How does A* search with Levenshtein distance heuristics in a Trie structure compare to KD-Tree semantic search for spell-checking efficiency and suggestion quality?**
 
@@ -74,7 +74,7 @@ We hypothesize that:
 
 ---
 
-## 📐 Algorithmic Justification
+## Algorithmic Justification
 
 ### Why These Algorithms?
 
@@ -133,7 +133,7 @@ Space Complexity: O(N × D) where D = number of dimensions
 
 ---
 
-## 🚀 Advanced Features
+## Advanced Features
 
 ### 1. OpenMP Parallel Processing
 
@@ -174,7 +174,7 @@ Analyzes text sentiment and formality:
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -218,7 +218,7 @@ Analyzes text sentiment and formality:
 
 ---
 
-## 🔧 Data Structures and Algorithms
+## Data Structures and Algorithms
 
 ### 1. Trie (Prefix Tree)
 
@@ -280,7 +280,7 @@ class AStarSpellChecker {
 
 ---
 
-## 🚀 Installation and Usage
+## Installation and Usage
 
 ### Prerequisites
 
@@ -372,7 +372,7 @@ make test
 
 ---
 
-## 📊 Benchmarks and Results
+## Benchmarks and Results
 
 ### Test Configuration
 
@@ -415,7 +415,7 @@ make test
 
 ---
 
-## 📈 Performance Analysis
+## Performance Analysis
 
 ### Time Complexity Analysis
 
@@ -443,7 +443,7 @@ Performance vs Dictionary Size:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 MidtermDSA/
@@ -495,7 +495,7 @@ MidtermDSA/
 
 ---
 
-## 📚 References
+## References
 
 1. **Levenshtein, V.I.** (1966). "Binary codes capable of correcting deletions, insertions, and reversals." *Soviet Physics Doklady*, 10(8): 707-710.
 
@@ -511,6 +511,6 @@ MidtermDSA/
 
 ---
 
-## 📄 License
+## License
 
 This project is developed for educational purposes as part of the DSA course midterm evaluation.
