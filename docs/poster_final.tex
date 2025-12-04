@@ -1,0 +1,517 @@
+% ==========================================================
+% TC2038 - Spell Checker: A* + Trie vs KD-Tree
+% Midterm Project Poster - A0 Portrait
+% ==========================================================
+\documentclass[final]{beamer}
+
+% Poster size - A0 portrait with moderate scale
+\usepackage[size=a0,orientation=portrait,scale=1.2]{beamerposter}
+\setbeamersize{text margin left=1.5cm,text margin right=1.5cm}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\hypersetup{hidelinks}
+
+% Colors
+\definecolor{primary}{RGB}{0,0,0}
+\definecolor{secondary}{RGB}{80,80,80}
+\definecolor{border}{RGB}{150,150,150}
+\definecolor{triecolor}{RGB}{0,102,204}
+\definecolor{kdcolor}{RGB}{204,51,0}
+\definecolor{parallelcolor}{RGB}{0,153,76}
+\definecolor{blockbg}{RGB}{250,250,250}
+
+% Fonts
+\setbeamerfont{block title}{size=\Large,series=\bfseries}
+\setbeamerfont{block body}{size=\normalsize}
+\setbeamercolor{block title}{fg=primary}
+\setbeamercolor{block body}{fg=secondary}
+
+% Custom block style with more spacing
+\setbeamertemplate{block begin}{
+  \vspace{1.5em}
+  \begin{tcolorbox}[
+    colback=blockbg,
+    colframe=border,
+    boxrule=1pt,
+    arc=0mm,
+    left=10mm,
+    right=10mm,
+    top=8mm,
+    bottom=8mm
+  ]
+  {\usebeamerfont{block title}\insertblocktitle}
+  \vspace{0.8em}\par
+}
+\setbeamertemplate{block end}{\end{tcolorbox}\vspace{1.5em}}
+
+% Header
+\setbeamertemplate{headline}{
+  \vspace{1.2cm}
+  \begin{center}
+    {\fontsize{60}{70}\selectfont\bfseries SPELL CHECKER: A* + TRIE VS KD-TREE}\\[0.6cm]
+    {\fontsize{30}{36}\selectfont Comparative Analysis of Data Structures for Orthographic Correction}\\[0.8cm]
+    {\fontsize{24}{30}\selectfont Marco Antonio Torres R. \quad $\bullet$ \quad Alexa Nohemi Lara C. \quad $\bullet$ \quad Marián Hernández Ch. \quad $\bullet$ \quad Alex Renato Peña H.}\\[0.4cm]
+    {\fontsize{22}{28}\selectfont Tecnológico de Monterrey -- Fall 2025}
+  \end{center}
+  \vspace{0.6cm}
+  \begin{center}\color{border}\rule{0.95\paperwidth}{2pt}\end{center}
+  \vspace{0.5cm}
+}
+
+% Footer
+\setbeamertemplate{footline}{
+  \vspace{0.5cm}
+  \begin{center}\color{border}\rule{0.95\paperwidth}{2pt}\end{center}
+  \vspace{0.4cm}
+  \begin{center}
+    {\fontsize{18}{22}\selectfont TC2038 -- Analysis and Design of Advanced Algorithms -- School of Engineering and Sciences}\\[0.2cm]
+    {\fontsize{18}{22}\selectfont Tecnológico de Monterrey -- D.R. ITESM 2025}
+  \end{center}
+  \vspace{0.5cm}
+}
+
+\setbeamertemplate{navigation symbols}{}
+
+\begin{document}
+\begin{frame}[t]
+
+\begin{columns}[t,totalwidth=\textwidth]
+
+% ===================== LEFT COLUMN ========================
+\begin{column}{0.31\textwidth}
+
+\begin{block}{I. Project Overview}
+This project compares two approaches for spell checking:
+
+\vspace{1.2em}
+\textcolor{triecolor}{\textbf{\large A* Search + Trie}}
+
+\vspace{0.4em}
+$\bullet$ Heuristic search using Levenshtein distance
+
+\vspace{0.3em}
+$\bullet$ Finds corrections based on minimum edits
+
+\vspace{1.2em}
+\textcolor{kdcolor}{\textbf{\large KD-Tree Semantic Search}}
+
+\vspace{0.4em}
+$\bullet$ 5-dimensional word embeddings
+
+\vspace{0.3em}
+$\bullet$ Nearest neighbor in feature space
+
+\vspace{1.2em}
+\textcolor{parallelcolor}{\textbf{\large OpenMP Parallelization}}
+
+\vspace{0.4em}
+$\bullet$ Multi-threaded text processing
+
+\vspace{0.3em}
+$\bullet$ Achieved \textbf{3.53x speedup}
+
+\vspace{1.5em}
+\begin{center}
+\fcolorbox{triecolor}{white}{\parbox{0.85\linewidth}{
+  \centering
+  \textbf{Key Result:}\\
+  A* + Trie is \textbf{8.2x faster}\\
+  KD-Tree gives \textbf{diverse suggestions}
+}}
+\end{center}
+\end{block}
+
+\begin{block}{II. Objectives}
+\textbf{Primary:}
+
+\vspace{0.4em}
+$\bullet$ Implement A* search with Levenshtein heuristic
+
+\vspace{0.3em}
+$\bullet$ Implement KD-Tree with 5D embeddings
+
+\vspace{0.3em}
+$\bullet$ Compare performance and accuracy
+
+\vspace{0.3em}
+$\bullet$ Develop interactive CLI
+
+\vspace{1.2em}
+\textbf{Secondary:}
+
+\vspace{0.4em}
+$\bullet$ OpenMP parallel processing
+
+\vspace{0.3em}
+$\bullet$ Tone analysis for sentiment
+
+\vspace{0.3em}
+$\bullet$ Support 15,000+ word dictionary
+
+\vspace{1.2em}
+\textbf{Research Question:}
+
+\vspace{0.4em}
+\textit{Which data structure offers the best balance between performance and suggestion quality?}
+\end{block}
+
+\begin{block}{III. Problem Statement}
+\textbf{Context:} Spell checking is fundamental in text editors, search engines, and messaging platforms.
+
+\vspace{1em}
+\textbf{Challenges:}
+
+\vspace{0.4em}
+$\bullet$ Finding similar words efficiently
+
+\vspace{0.3em}
+$\bullet$ Balancing speed vs quality
+
+\vspace{0.3em}
+$\bullet$ Scaling to large documents
+
+\vspace{1.2em}
+\textbf{Formal Definition:}
+
+\vspace{0.5em}
+Given dictionary $D$ and input word $q$:
+
+\vspace{0.6em}
+\textit{A* + Trie:}
+\[ w^* = \arg\min_{w \in D} \text{Lev}(q, w) \]
+
+\vspace{0.3em}
+\textit{KD-Tree:}
+\[ w^* = \arg\min_{w \in D} \|\text{embed}(q) - \text{embed}(w)\|_2 \]
+
+\vspace{1em}
+\textbf{System Architecture:}
+
+\vspace{0.8em}
+\begin{center}
+\begin{tikzpicture}[scale=1.0, every node/.style={font=\normalsize}]
+  \node[draw, rounded corners, fill=white, minimum width=3.2cm, minimum height=1cm] (input) at (0,0) {Input Text};
+  \node[draw, rounded corners, fill=triecolor!25, minimum width=3cm, minimum height=1cm] (trie) at (-3,-2) {A* + Trie};
+  \node[draw, rounded corners, fill=kdcolor!25, minimum width=3cm, minimum height=1cm] (kd) at (3,-2) {KD-Tree};
+  \node[draw, rounded corners, fill=parallelcolor!25, minimum width=3.2cm, minimum height=1cm] (parallel) at (0,-4) {OpenMP};
+  \node[draw, rounded corners, fill=white, minimum width=3.2cm, minimum height=1cm] (output) at (0,-6) {Output};
+  
+  \draw[->, thick] (input) -- (trie);
+  \draw[->, thick] (input) -- (kd);
+  \draw[->, thick] (trie) -- (parallel);
+  \draw[->, thick] (kd) -- (parallel);
+  \draw[->, thick] (parallel) -- (output);
+\end{tikzpicture}
+\end{center}
+\end{block}
+
+\end{column}
+
+% ===================== MIDDLE COLUMN =======================
+\begin{column}{0.36\textwidth}
+
+\begin{block}{IV. Algorithm Design}
+\textcolor{triecolor}{\textbf{\large Algorithm 1: A* Search in Trie}}
+
+\vspace{0.8em}
+\textbf{Trie Structure:}
+
+\vspace{0.4em}
+$\bullet$ Prefix tree for efficient storage
+
+\vspace{0.3em}
+$\bullet$ Each node: children map + isEndOfWord flag
+
+\vspace{0.8em}
+\textbf{A* Search Function:}
+\[ f(n) = g(n) + h(n) \]
+where $g(n)$ = accumulated Levenshtein distance and $h(n)$ = heuristic estimate.
+
+\vspace{0.8em}
+\textbf{Levenshtein Distance:}
+\[ d(i,j) = \min \begin{cases}
+  d(i-1,j) + 1 & \text{(del)}\\
+  d(i,j-1) + 1 & \text{(ins)}\\
+  d(i-1,j-1) + c & \text{(sub)}
+\end{cases} \]
+
+\vspace{1.2em}
+\begin{center}\color{border}\rule{0.9\linewidth}{1pt}\end{center}
+\vspace{1em}
+
+\textcolor{kdcolor}{\textbf{\large Algorithm 2: KD-Tree Search}}
+
+\vspace{0.8em}
+\textbf{5-Dimensional Word Embedding:}
+
+\vspace{0.4em}
+\begin{enumerate}
+\item Normalized length: $\text{len}(w)/20$
+\item Vowel frequency
+\item Consonant frequency
+\item First character normalized
+\item Last character normalized
+\end{enumerate}
+
+\vspace{0.5em}
+\textbf{Euclidean Distance:}
+\[ d(\vec{p}, \vec{q}) = \sqrt{\sum_{i=1}^{5} (p_i - q_i)^2} \]
+
+\vspace{1.2em}
+\begin{center}\color{border}\rule{0.9\linewidth}{1pt}\end{center}
+\vspace{1em}
+
+\textcolor{parallelcolor}{\textbf{\large OpenMP Parallelization}}
+
+\vspace{0.6em}
+$\bullet$ Text split into word chunks
+
+\vspace{0.3em}
+$\bullet$ Dynamic scheduling for load balancing
+
+\vspace{0.3em}
+$\bullet$ \texttt{\#pragma omp parallel for schedule(dynamic)}
+
+\vspace{0.8em}
+\textbf{Parallel Levenshtein (Anti-diagonal):}
+
+\vspace{0.4em}
+$\bullet$ DP matrix computed by anti-diagonals
+
+\vspace{0.3em}
+$\bullet$ Cells in same diagonal are independent
+
+\vspace{0.3em}
+$\bullet$ Best for batch processing: \textbf{5.42x speedup}
+\end{block}
+
+\begin{block}{V. Complexity Analysis}
+\textbf{Time Complexity:}
+
+\vspace{0.6em}
+\begin{center}
+\begin{tabular}{lcc}
+  \toprule
+  \textbf{Operation} & \textbf{A* + Trie} & \textbf{KD-Tree} \\
+  \midrule
+  Construction & $O(n \cdot m)$ & $O(n \log n)$ \\
+  Search (Best) & $O(m)$ & $O(\log n)$ \\
+  Search (Avg) & $O(m \cdot d)$ & $O(\log n)$ \\
+  Search (Worst) & $O(n \cdot m)$ & $O(n)$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.4em}
+{\small $n$ = dict size, $m$ = avg word length, $d$ = max edit dist}
+
+\vspace{1.2em}
+\textbf{Space Complexity:}
+
+\vspace{0.6em}
+\begin{center}
+\begin{tabular}{lcc}
+  \toprule
+  \textbf{Structure} & \textbf{A* + Trie} & \textbf{KD-Tree} \\
+  \midrule
+  Dictionary & $O(n \cdot m)$ & $O(n \cdot k)$ \\
+  Search Space & $O(m \cdot |\Sigma|)$ & $O(\log n)$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.4em}
+{\small $|\Sigma|$ = 26 (alphabet), $k$ = 5 (dimensions)}
+
+\vspace{1.2em}
+\textbf{Parallel Speedup (Amdahl's Law):}
+\[ S(p) = \frac{1}{(1-f) + \frac{f}{p}} \]
+
+With $f \approx 0.85$ and $p = 12$: $S_{\text{theoretical}} = 4.7$, $S_{\text{actual}} = 3.53$ (75\% efficiency)
+\end{block}
+
+\end{column}
+
+% ===================== RIGHT COLUMN ========================
+\begin{column}{0.31\textwidth}
+
+\begin{block}{VI. Experimental Results}
+\textbf{Setup:} 15,000+ words, 267 test words, 12 threads
+
+\vspace{1em}
+\textbf{Performance Comparison:}
+
+\vspace{0.6em}
+\begin{center}
+\begin{tabular}{lcc}
+  \toprule
+  \textbf{Metric} & \textbf{A*+Trie} & \textbf{KD-Tree} \\
+  \midrule
+  Time/word & 0.045 ms & 0.37 ms \\
+  Total time & 12.0 ms & 98.8 ms \\
+  Accuracy & 94.2\% & 87.5\% \\
+  Memory & 2.3 MB & 1.8 MB \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\textbf{Search Time Chart:}
+
+\vspace{0.5em}
+\begin{center}
+\begin{tikzpicture}
+  \begin{axis}[
+    ybar,
+    width=0.85\linewidth,
+    height=6cm,
+    bar width=35pt,
+    ylabel={Time (ms)},
+    ylabel style={font=\normalsize},
+    symbolic x coords={A*+Trie, KD-Tree},
+    xtick=data,
+    xticklabel style={font=\normalsize},
+    yticklabel style={font=\small},
+    ymin=0, ymax=0.45,
+    nodes near coords,
+    nodes near coords style={font=\normalsize, above=3pt},
+    enlarge x limits=0.5,
+  ]
+  \addplot[fill=triecolor] coordinates {(A*+Trie, 0.045)};
+  \addplot[fill=kdcolor] coordinates {(KD-Tree, 0.37)};
+  \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\vspace{1.2em}
+\textbf{Parallel Scalability:}
+
+\vspace{0.8em}
+\begin{center}
+\begin{tabular}{ccc}
+  \toprule
+  \textbf{Threads} & \textbf{Time} & \textbf{Speedup} \\
+  \midrule
+  1 & 11.04 ms & 1.00x \\
+  4 & 3.79 ms & 2.91x \\
+  8 & 3.20 ms & 3.45x \\
+  12 & 3.13 ms & \textbf{3.53x} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+\begin{center}
+\begin{tikzpicture}
+  \begin{axis}[
+    width=0.85\linewidth,
+    height=5.5cm,
+    xlabel={Threads},
+    ylabel={Speedup},
+    xlabel style={font=\normalsize},
+    ylabel style={font=\normalsize},
+    xmin=0, xmax=13,
+    ymin=0, ymax=5,
+    xtick={1,4,8,12},
+    grid=major,
+    legend style={font=\small, at={(0.97,0.35)}}
+  ]
+  \addplot[color=parallelcolor, mark=*, thick, mark size=3pt] coordinates {
+    (1, 1.0) (2, 1.82) (4, 2.91) (8, 3.45) (12, 3.53)
+  };
+  \addlegendentry{Actual}
+  \addplot[color=gray, dashed] coordinates {(1, 1.0) (12, 4.7)};
+  \addlegendentry{Theoretical}
+  \end{axis}
+\end{tikzpicture}
+\end{center}
+
+\vspace{1.2em}
+\textbf{Example:} Input: \texttt{"helo wrold"}
+
+\vspace{0.5em}
+\begin{center}
+\begin{tabular}{lll}
+  \toprule
+  \textbf{Word} & \textbf{A*+Trie} & \textbf{KD-Tree} \\
+  \midrule
+  helo & \textcolor{triecolor}{\textbf{hello}} & help, hero \\
+  wrold & \textcolor{triecolor}{\textbf{world}} & would, word \\
+  \bottomrule
+\end{tabular}
+\end{center}
+\end{block}
+
+\begin{block}{VII. Conclusions}
+\textbf{Main Findings:}
+
+\vspace{0.6em}
+\textbf{1.} A* + Trie is 8.2x faster with 94.2\% accuracy
+
+\vspace{0.4em}
+\textbf{2.} KD-Tree provides diverse semantic suggestions
+
+\vspace{0.4em}
+\textbf{3.} OpenMP achieved 3.53x speedup (75\% efficiency)
+
+\vspace{0.4em}
+\textbf{4.} A hybrid approach would leverage both strengths
+
+\vspace{1.2em}
+\textbf{Future Work:}
+
+\vspace{0.5em}
+$\bullet$ Word2Vec/GloVe embeddings
+
+\vspace{0.3em}
+$\bullet$ Contextual n-gram correction
+
+\vspace{0.3em}
+$\bullet$ Multi-language support
+
+\vspace{1.2em}
+\begin{center}
+\fcolorbox{parallelcolor}{white}{\parbox{0.85\linewidth}{
+  \centering
+  \textbf{Recommendation:}\\
+  A* + Trie for spell correction\\
+  KD-Tree for word suggestions
+}}
+\end{center}
+\end{block}
+
+\begin{block}{VIII. References}
+{\small
+[1] Levenshtein (1966). Binary codes capable of correcting deletions. \textit{Soviet Physics Doklady}.
+
+\vspace{0.5em}
+[2] Bentley (1975). Multidimensional binary search trees. \textit{Comm. ACM}.
+
+\vspace{0.5em}
+[3] Hart et al. (1968). A formal basis for heuristic determination. \textit{IEEE Trans.}
+
+\vspace{0.5em}
+[4] Cormen et al. (2009). \textit{Intro to Algorithms}. MIT Press.
+}
+
+\vspace{1em}
+\textbf{Code:} \texttt{github.com/Alexa404NL/MidtermDSA}
+\end{block}
+
+\end{column}
+
+\end{columns}
+
+\end{frame}
+\end{document}
